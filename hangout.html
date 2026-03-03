@@ -1,0 +1,615 @@
+<!doctype html>
+<html lang="en" class="h-full">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hyderabad Travel Blog</title>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script src="/_sdk/element_sdk.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&amp;family=Source+Sans+3:wght@300;400;500;600&amp;display=swap" rel="stylesheet">
+  <style>
+        :root {
+            --bg-color: #0a0a0f;
+            --surface-color: #1a1a24;
+            --text-color: #f5f5f0;
+            --primary-color: #d4a853;
+            --secondary-color: #8b7355;
+        }
+        
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .app-wrapper {
+            min-height: 100%;
+            width: 100%;
+            background: var(--bg-color);
+            overflow-y: auto;
+        }
+        
+        .font-heading {
+            font-family: 'Playfair Display', Georgia, serif;
+        }
+        
+        .font-body {
+            font-family: 'Source Sans 3', 'Segoe UI', sans-serif;
+        }
+        
+        .hero-gradient {
+            background: linear-gradient(135deg, #1a1a24 0%, #0a0a0f 50%, #1a1520 100%);
+        }
+        
+        .golden-border {
+            border: 1px solid var(--primary-color);
+        }
+        
+        .card-gradient {
+            background: linear-gradient(180deg, var(--surface-color) 0%, rgba(26, 26, 36, 0.8) 100%);
+        }
+        
+        .text-gradient {
+            background: linear-gradient(135deg, var(--primary-color), #f0d78c);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .nav-link {
+            position: relative;
+            transition: color 0.3s ease;
+        }
+        
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--primary-color);
+            transition: width 0.3s ease;
+        }
+        
+        .nav-link:hover::after {
+            width: 100%;
+        }
+        
+        .place-card {
+            transition: transform 0.4s ease, box-shadow 0.4s ease;
+        }
+        
+        .place-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(212, 168, 83, 0.15);
+        }
+        
+        .image-container {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .image-container::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(180deg, transparent 50%, rgba(10, 10, 15, 0.9) 100%);
+            z-index: 1;
+        }
+        
+        .image-placeholder {
+            background: linear-gradient(135deg, var(--surface-color), #2a2a3a);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 280px;
+        }
+        
+        .location-link {
+            transition: all 0.3s ease;
+        }
+        
+        .location-link:hover {
+            color: var(--primary-color);
+        }
+        
+        .scroll-indicator {
+            animation: bounce 2s infinite;
+        }
+        
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-10px); }
+            60% { transform: translateY(-5px); }
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .animate-fadeInUp {
+            animation: fadeInUp 0.8s ease forwards;
+        }
+        
+        .delay-100 { animation-delay: 0.1s; }
+        .delay-200 { animation-delay: 0.2s; }
+        .delay-300 { animation-delay: 0.3s; }
+        .delay-400 { animation-delay: 0.4s; }
+        
+        .decorative-line {
+            width: 60px;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary-color), transparent);
+        }
+        
+        .section-divider {
+            background: linear-gradient(90deg, transparent, var(--primary-color), transparent);
+            height: 1px;
+        }
+
+        .category-badge {
+            background: rgba(212, 168, 83, 0.1);
+            border: 1px solid rgba(212, 168, 83, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .category-badge:hover {
+            background: rgba(212, 168, 83, 0.2);
+            border-color: var(--primary-color);
+        }
+
+        .timing-badge {
+            background: rgba(139, 115, 85, 0.2);
+            border-left: 3px solid var(--secondary-color);
+        }
+
+        .back-to-top {
+            transition: all 0.3s ease;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .back-to-top.visible {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .monument-icon {
+            filter: drop-shadow(0 0 10px rgba(212, 168, 83, 0.3));
+        }
+    </style>
+  <style>body { box-sizing: border-box; }</style>
+  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+ </head>
+ <body class="h-full">
+  <div class="app-wrapper font-body" style="color: var(--text-color);">
+   <!-- Navigation -->
+   <nav class="fixed top-0 left-0 right-0 z-50 px-6 py-4" style="background: rgba(10, 10, 15, 0.95); backdrop-filter: blur(10px);">
+    <div class="max-w-6xl mx-auto flex items-center justify-between">
+     <a href="#" class="font-heading text-xl font-semibold" style="color: var(--primary-color);" id="nav-title"> ✦ HYDERABAD </a>
+     <div class="hidden md:flex items-center gap-8">
+      <a href="#tourist" class="nav-link text-sm tracking-wide uppercase" style="color: var(--text-color);">Tourist Places</a> <a href="#hangout" class="nav-link text-sm tracking-wide uppercase" style="color: var(--text-color);">Hangout Places</a> <a href="#holy" class="nav-link text-sm tracking-wide uppercase" style="color: var(--text-color);">Holy Places</a>
+     </div><button class="md:hidden" style="color: var(--primary-color);" onclick="toggleMobileMenu()">
+      <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2">
+       <path d="M3 12h18M3 6h18M3 18h18" />
+      </svg></button>
+    </div><!-- Mobile Menu -->
+    <div id="mobileMenu" class="hidden md:hidden mt-4 pb-4 border-t" style="border-color: rgba(212, 168, 83, 0.2);">
+     <div class="flex flex-col gap-4 pt-4">
+      <a href="#tourist" class="text-sm tracking-wide uppercase" style="color: var(--text-color);">Tourist Places</a> <a href="#hangout" class="text-sm tracking-wide uppercase" style="color: var(--text-color);">Hangout Places</a> <a href="#holy" class="text-sm tracking-wide uppercase" style="color: var(--text-color);">Holy Places</a>
+     </div>
+    </div>
+   </nav><!-- Hero Section -->
+   <header class="hero-gradient relative px-6 pt-32 pb-20 md:pt-40 md:pb-32">
+    <div class="absolute inset-0 opacity-20">
+     <div class="absolute top-20 left-10 w-32 h-32 rounded-full" style="background: radial-gradient(circle, var(--primary-color), transparent);"></div>
+     <div class="absolute bottom-20 right-10 w-48 h-48 rounded-full" style="background: radial-gradient(circle, var(--secondary-color), transparent);"></div>
+    </div>
+    <div class="max-w-4xl mx-auto text-center relative z-10">
+     <p class="text-sm tracking-widest uppercase mb-4 opacity-70 animate-fadeInUp" style="color: var(--primary-color);">Welcome to</p>
+     <h1 id="hero-title" class="font-heading text-5xl md:text-7xl font-bold mb-6 animate-fadeInUp delay-100" style="color: var(--text-color);">HYDERABAD</h1>
+     <p id="hero-tagline" class="font-heading text-xl md:text-2xl italic mb-8 animate-fadeInUp delay-200" style="color: var(--primary-color);">The City of Pearls &amp; Nizams</p>
+     <p class="text-lg md:text-xl leading-relaxed max-w-2xl mx-auto opacity-80 animate-fadeInUp delay-300">Discover the rich heritage, magnificent monuments, and vibrant culture of one of India's most historic cities.</p>
+     <div class="mt-12 scroll-indicator animate-fadeInUp delay-400">
+      <svg class="w-8 h-8 mx-auto" style="color: var(--primary-color);" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+      </svg>
+     </div>
+    </div>
+   </header><!-- Quick Navigation Cards -->
+   <section class="px-6 py-16" style="background: var(--bg-color);">
+    <div class="max-w-6xl mx-auto">
+     <div class="grid md:grid-cols-3 gap-6">
+      <a href="#tourist" class="group p-6 rounded-xl golden-border card-gradient text-center transition-all hover:scale-105">
+       <div class="text-4xl mb-4">
+        🏛️
+       </div><h3 class="font-heading text-lg font-semibold mb-2" style="color: var(--primary-color);">Tourist Places</h3><p class="text-sm opacity-70">Historic monuments &amp; landmarks</p></a> <a href="#hangout" class="group p-6 rounded-xl golden-border card-gradient text-center transition-all hover:scale-105">
+       <div class="text-4xl mb-4">
+        🎢
+       </div><h3 class="font-heading text-lg font-semibold mb-2" style="color: var(--primary-color);">Hangout Places</h3><p class="text-sm opacity-70">Fun destinations &amp; leisure spots</p></a> <a href="#holy" class="group p-6 rounded-xl golden-border card-gradient text-center transition-all hover:scale-105">
+       <div class="text-4xl mb-4">
+        🕌
+       </div><h3 class="font-heading text-lg font-semibold mb-2" style="color: var(--primary-color);">Holy Places</h3><p class="text-sm opacity-70">Spiritual &amp; religious sites</p></a>
+     </div>
+    </div>
+   </section><!-- Tourist Places Section -->
+   <section id="tourist" class="px-6 py-20" style="background: linear-gradient(180deg, var(--bg-color), var(--surface-color));">
+    <div class="max-w-6xl mx-auto">
+     <div class="text-center mb-16">
+      <span class="category-badge inline-block px-4 py-2 rounded-full text-xs tracking-widest uppercase mb-4" style="color: var(--primary-color);"> Explore History </span>
+      <h2 class="font-heading text-4xl md:text-5xl font-bold mb-4" style="color: var(--text-color);">Tourist Places</h2>
+      <div class="decorative-line mx-auto"></div>
+     </div><!-- Charminar -->
+     <article class="place-card card-gradient rounded-2xl overflow-hidden mb-12 golden-border">
+      <div class="md:flex">
+       <div class="md:w-2/5 image-container"><img src="https://s7ap1.scene7.com/is/image/incredibleindia/charminar-hyderabad-secunderabad-telangana-musthead-hero?qlt=82&ts=1742167556337" alt="Charminar" loading="lazy" class="w-full h-full object-cover" onerror="this.style.background='linear-gradient(135deg, #d4a853 0%, #8b7355 100%)'; this.alt='Charminar Monument';">
+       </div>
+       <div class="md:w-3/5 p-8 md:p-10">
+        <div class="flex items-center gap-3 mb-4">
+         <span class="text-2xl">🏛️</span>
+         <h3 class="font-heading text-3xl font-bold text-gradient">Charminar</h3>
+        </div><a href="https://www.google.com/maps?q=Charminar,+Charminar+Rd,+Char+Kaman,+Ghansi+Bazaar,+Hyderabad,+Telangana+500002" target="_blank" rel="noopener noreferrer" class="location-link inline-flex items-center gap-2 text-sm mb-4" style="color: var(--secondary-color);">
+         <svg class="w-4 h-4" fill="currentColor" viewbox="0 0 20 20">
+          <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd" />
+         </svg> Charminar Rd, Char Kaman, Ghansi Bazaar, Hyderabad </a>
+        <div class="timing-badge inline-block px-4 py-2 rounded-r-lg mb-6">
+         <span class="text-sm font-medium">🕐 Daily: 9:00 AM - 5:30 PM</span>
+        </div>
+        <p class="leading-relaxed opacity-90 mb-4">Built in 1591 by Sultan Mohammed Quli Qutb Shah, Charminar is Hyderabad's most famous landmark. While its exact purpose is debated, popular beliefs say it marked the end of a deadly plague, served as a tribute to Allah, commemorated the second Islamic millennium, and celebrated the foundation of Hyderabad.</p>
+        <p class="leading-relaxed opacity-80 text-sm">The monument's four minarets (48.7 m high) represent the first four caliphs of Islam. Designed by Iranian architect Mir Momin Astrawadi, it's a square granite and lime structure with intricate carvings, arches, and a mosque on the top floor — the oldest in the city. Visitors can climb 149 steps for stunning city views.</p>
+        <div class="mt-6 pt-6 border-t" style="border-color: rgba(212, 168, 83, 0.2);">
+         <p class="text-sm italic opacity-70" style="color: var(--primary-color);">✦ Legend speaks of a secret tunnel to Golconda Fort, though none has been found.</p>
+        </div>
+       </div>
+      </div>
+     </article><!-- Golconda Fort -->
+     <article class="place-card card-gradient rounded-2xl overflow-hidden mb-12 golden-border">
+      <div class="md:flex md:flex-row-reverse">
+       <div class="md:w-2/5 image-container"><img src="https://www.hyderabadtourism.travel/images/v2/header-places/golconda-fort-hyderabad-tourism-attraction-entryfee-timings-reviews-header.jpg" alt="Golconda Fort" loading="lazy" class="w-full h-full object-cover" onerror="this.style.background='linear-gradient(135deg, #8b7355 0%, #5a4a3a 100%)'; this.alt='Golconda Fort';">
+       </div>
+       <div class="md:w-3/5 p-8 md:p-10">
+        <div class="flex items-center gap-3 mb-4">
+         <span class="text-2xl">🏰</span>
+         <h3 class="font-heading text-3xl font-bold text-gradient">Golconda Fort</h3>
+        </div><a href="https://www.google.com/maps?q=Khair+Complex,+Ibrahim+Bagh,+Hyderabad,+Telangana+500008" target="_blank" rel="noopener noreferrer" class="location-link inline-flex items-center gap-2 text-sm mb-4" style="color: var(--secondary-color);">
+         <svg class="w-4 h-4" fill="currentColor" viewbox="0 0 20 20">
+          <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd" />
+         </svg> Khair Complex, Ibrahim Bagh, Hyderabad </a>
+        <div class="timing-badge inline-block px-4 py-2 rounded-r-lg mb-6">
+         <span class="text-sm font-medium">🕐 Daily: 9:00 AM - 5:00 PM</span>
+        </div>
+        <p class="leading-relaxed opacity-90 mb-4">Originally built as a mud fort in 1143 by the Kakatiya rulers and called Mankal, Golconda was later expanded by the Bahmani Sultans and transformed into a massive granite fortress by the Qutub Shahi dynasty, who made it their capital. Once a thriving diamond-trading hub, it was famed for producing legendary gems like the Koh-i-Noor.</p>
+        <p class="leading-relaxed opacity-80 text-sm">The fort spans 5 km in circumference, with 8 gateways, massive ramparts, royal palaces, mosques, and a hilltop pavilion 130 m high offering panoramic views. Its acoustics are an engineering marvel — a clap at the Fateh Darwaza can be heard 1 km away at the top pavilion.</p>
+        <div class="mt-6 pt-6 border-t" style="border-color: rgba(212, 168, 83, 0.2);">
+         <p class="text-sm italic opacity-70" style="color: var(--primary-color);">✦ In 1687, Golconda fell to Mughal Emperor Aurangzeb, who left it in ruins.</p>
+        </div>
+       </div>
+      </div>
+     </article><!-- Hussain Sagar -->
+     <article class="place-card card-gradient rounded-2xl overflow-hidden golden-border">
+      <div class="md:flex">
+       <div class="md:w-2/5 image-container"><img src="https://dynamic-media-cdn.tripadvisor.com/media/photo-o/0e/3d/73/8b/straight-view-of-the.jpg?w=1200&h=-1&s=1" alt="Hussain Sagar" loading="lazy" class="w-full h-full object-cover" onerror="this.style.background='linear-gradient(135deg, #4a7c8c 0%, #2a5c6c 100%)'; this.alt='Hussain Sagar Lake';">
+       </div>
+       <div class="md:w-3/5 p-8 md:p-10">
+        <div class="flex items-center gap-3 mb-4">
+         <span class="text-2xl">🌊</span>
+         <h3 class="font-heading text-3xl font-bold text-gradient">Hussain Sagar</h3>
+        </div><a href="https://www.google.com/maps?q=Hussain+Sagar,+Hyderabad,+Telangana" target="_blank" rel="noopener noreferrer" class="location-link inline-flex items-center gap-2 text-sm mb-4" style="color: var(--secondary-color);">
+         <svg class="w-4 h-4" fill="currentColor" viewbox="0 0 20 20">
+          <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd" />
+         </svg> Hussain Sagar, Hyderabad, Telangana </a>
+        <div class="timing-badge inline-block px-4 py-2 rounded-r-lg mb-6">
+         <span class="text-sm font-medium">🕐 Daily: 8:00 AM - 10:00 PM</span>
+        </div>
+        <p class="leading-relaxed opacity-90 mb-4">Also known as Tank Bund, Hussain Sagar is Asia's largest artificial lake, built in 1562 by Ibrahim Quli Qutb Shah and named after Hussain Shah Wali. Originally constructed for irrigation, it now connects Hyderabad and Secunderabad while serving as a beloved leisure spot.</p>
+        <p class="leading-relaxed opacity-80 text-sm">At its center stands a striking 16 m tall, 350-ton white granite Buddha statue on the Rock of Gibraltar, beautifully illuminated at night. The lake is surrounded by parks like Lumbini Park, Sanjeevaiah Park, and Indira Park, making it perfect for evening strolls.</p>
+        <div class="mt-6 pt-6 border-t" style="border-color: rgba(212, 168, 83, 0.2);">
+         <p class="text-sm italic opacity-70" style="color: var(--primary-color);">✦ The Buddha statue is one of the world's tallest monolithic statues.</p>
+        </div>
+       </div>
+      </div>
+     </article>
+    </div>
+   </section>
+   <div class="section-divider"></div><!-- Hangout Places Section -->
+   <section id="hangout" class="px-6 py-20" style="background: var(--bg-color);">
+    <div class="max-w-6xl mx-auto">
+     <div class="text-center mb-16">
+      <span class="category-badge inline-block px-4 py-2 rounded-full text-xs tracking-widest uppercase mb-4" style="color: var(--primary-color);"> Fun &amp; Leisure </span>
+      <h2 class="font-heading text-4xl md:text-5xl font-bold mb-4" style="color: var(--text-color);">Hangout Places</h2>
+      <div class="decorative-line mx-auto"></div>
+     </div>
+     <div class="grid md:grid-cols-2 gap-8">
+      <!-- Ramoji Film City -->
+      <article class="place-card card-gradient rounded-2xl overflow-hidden golden-border">
+       <div class="image-container"><img src="https://www.hyderabadtourism.travel/images/v3/1440x960/ramoji-film-city-1440x960.jpg" alt="Ramoji Film City" loading="lazy" class="w-full h-48 object-cover" onerror="this.style.background='linear-gradient(135deg, #6b4423 0%, #4a2a15 100%)'; this.alt='Ramoji Film City';">
+       </div>
+       <div class="p-6">
+        <div class="flex items-center gap-2 mb-3">
+         <span class="text-xl">🎬</span>
+         <h3 class="font-heading text-2xl font-bold text-gradient">Ramoji Film City</h3>
+        </div>
+        <p class="text-sm opacity-80 mb-4">The world's largest integrated film studio complex, offering themed attractions, live shows, and behind-the-scenes experiences.</p>
+        <div class="timing-badge inline-block px-3 py-1 rounded-r-lg text-sm">
+         🕐 9:00 AM - 5:30 PM
+        </div>
+       </div>
+      </article><!-- Snow World -->
+      <article class="place-card card-gradient rounded-2xl overflow-hidden golden-border">
+       <div class="image-container"><img src="https://hyderabadtourpackage.in/images/places-to-visit/snow-world-hyderabad-entryfee-timings-tour-package-header.jpg" alt="Snow World" loading="lazy" class="w-full h-48 object-cover" onerror="this.style.background='linear-gradient(135deg, #e8f4f8 0%, #c0e8f0 100%)'; this.alt='Snow World';">
+       </div>
+       <div class="p-6">
+        <div class="flex items-center gap-2 mb-3">
+         <span class="text-xl">❄️</span>
+         <h3 class="font-heading text-2xl font-bold text-gradient">Snow World</h3>
+        </div>
+        <p class="text-sm opacity-80 mb-4">India's first snow-themed park with real snow, ice sculptures, and winter activities in the heart of tropical Hyderabad.</p>
+        <div class="timing-badge inline-block px-3 py-1 rounded-r-lg text-sm">
+         🕐 11:00 AM - 9:00 PM
+        </div>
+       </div>
+      </article><!-- NTR Gardens -->
+      <article class="place-card card-gradient rounded-2xl overflow-hidden golden-border">
+       <div class="image-container"><img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjaJizBHffy_R8GO8S9gnZTUq1BdsGZ6D1f-HMqr0l2N9aHS39-CwUpnC4MQUDfiaCqNBKBCIaXsmKXKcR1TMIXgZrhFI-hHub0Q2Wi9BjzvnIMR__YvPGrbYDp3OIhcEW4uD6bN4XGHLg/s1600/30-4X0A1603.JPG" alt="NTR Gardens" loading="lazy" class="w-full h-48 object-cover" onerror="this.style.background='linear-gradient(135deg, #4a6741 0%, #2a4a31 100%)'; this.alt='NTR Gardens';">
+       </div>
+       <div class="p-6">
+        <div class="flex items-center gap-2 mb-3">
+         <span class="text-xl">🌳</span>
+         <h3 class="font-heading text-2xl font-bold text-gradient">NTR Gardens</h3>
+        </div>
+        <p class="text-sm opacity-80 mb-4">A beautiful urban park near Hussain Sagar with lush gardens, a Japanese garden, toy train, and stunning lake views.</p>
+        <div class="timing-badge inline-block px-3 py-1 rounded-r-lg text-sm">
+         🕐 9:00 AM - 9:00 PM
+        </div>
+       </div>
+      </article><!-- Wonderla -->
+      <article class="place-card card-gradient rounded-2xl overflow-hidden golden-border">
+       <div class="image-container"><img src="https://images.unsplash.com/photo-1533900298318-6b8da08a523e?w=400&amp;h=300&amp;fit=crop" alt="Wonderla Amusement Park" loading="lazy" class="w-full h-48 object-cover" onerror="this.style.background='linear-gradient(135deg, #c94d4d 0%, #a02020 100%)'; this.alt='Wonderla Park';">
+       </div>
+       <div class="p-6">
+        <div class="flex items-center gap-2 mb-3">
+         <span class="text-xl">🎢</span>
+         <h3 class="font-heading text-2xl font-bold text-gradient">Wonderla</h3>
+        </div>
+        <p class="text-sm opacity-80 mb-4">A thrilling amusement park featuring high-speed roller coasters, water rides, and family-friendly attractions.</p>
+        <div class="timing-badge inline-block px-3 py-1 rounded-r-lg text-sm">
+         🕐 11:00 AM - 7:00 PM
+        </div>
+       </div>
+      </article>
+     </div>
+    </div>
+   </section>
+   <div class="section-divider"></div><!-- Holy Places Section -->
+   <section id="holy" class="px-6 py-20" style="background: linear-gradient(180deg, var(--surface-color), var(--bg-color));">
+    <div class="max-w-6xl mx-auto">
+     <div class="text-center mb-16">
+      <span class="category-badge inline-block px-4 py-2 rounded-full text-xs tracking-widest uppercase mb-4" style="color: var(--primary-color);"> Spiritual Heritage </span>
+      <h2 class="font-heading text-4xl md:text-5xl font-bold mb-4" style="color: var(--text-color);">Holy Places</h2>
+      <div class="decorative-line mx-auto"></div>
+     </div>
+     <div class="grid md:grid-cols-3 gap-6">
+      <!-- Birla Mandir -->
+      <article class="place-card card-gradient rounded-2xl overflow-hidden golden-border">
+       <div class="image-container"><img src="https://upload.wikimedia.org/wikipedia/commons/3/3c/Birla_Mandir%2C_Hyderabad.png" alt="Birla Mandir" loading="lazy" class="w-full h-40 object-cover" onerror="this.style.background='linear-gradient(135deg, #f0f0f0 0%, #d0d0d0 100%)'; this.alt='Birla Mandir';">
+       </div>
+       <div class="p-5">
+        <div class="flex items-center gap-2 mb-2">
+         <span>🕉️</span>
+         <h3 class="font-heading text-xl font-bold text-gradient">Birla Mandir</h3>
+        </div>
+        <p class="text-xs opacity-80 mb-3">A stunning white marble temple on Naubat Pahad hill, offering panoramic views and spiritual serenity.</p>
+        <div class="timing-badge inline-block px-2 py-1 rounded-r-lg text-xs">
+         🕐 7:00 AM - 12:00 PM, 3:00 PM - 9:00 PM
+        </div>
+       </div>
+      </article><!-- Mecca Masjid -->
+      <article class="place-card card-gradient rounded-2xl overflow-hidden golden-border">
+       <div class="image-container"><img src="https://i0.wp.com/weekendyaari.in/wp-content/uploads/2024/11/Mecca-Masjid-Hyderabad.webp?fit=1024%2C683&ssl=1" alt="Mecca Masjid" loading="lazy" class="w-full h-40 object-cover" onerror="this.style.background='linear-gradient(135deg, #8b6f47 0%, #5a4a3a 100%)'; this.alt='Mecca Masjid';">
+       </div>
+       <div class="p-5">
+        <div class="flex items-center gap-2 mb-2">
+         <span>🕌</span>
+         <h3 class="font-heading text-xl font-bold text-gradient">Mecca Masjid</h3>
+        </div>
+        <p class="text-xs opacity-80 mb-3">One of the largest and oldest mosques in India, built with bricks from Mecca near Charminar.</p>
+        <div class="timing-badge inline-block px-2 py-1 rounded-r-lg text-xs">
+         🕐 4:00 AM - 9:30 PM
+        </div>
+       </div>
+      </article><!-- Jagannath Temple -->
+      <article class="place-card card-gradient rounded-2xl overflow-hidden golden-border">
+       <div class="image-container"><img src="https://temple.yatradham.org/public/Product/temple/temple_t8YhgyUl_202507011555080.web" alt="Jagannath Temple" loading="lazy" class="w-full h-40 object-cover" onerror="this.style.background='linear-gradient(135deg, #c9956e 0%, #8b6f47 100%)'; this.alt='Jagannath Temple';">
+       </div>
+       <div class="p-5">
+        <div class="flex items-center gap-2 mb-2">
+         <span>🛕</span>
+         <h3 class="font-heading text-xl font-bold text-gradient">Jagannath Temple</h3>
+        </div>
+        <p class="text-xs opacity-80 mb-3">A beautiful replica of Puri's Jagannath Temple, known for its annual Rath Yatra festival.</p>
+        <div class="timing-badge inline-block px-2 py-1 rounded-r-lg text-xs">
+         🕐 5:00 AM - 9:00 PM
+        </div>
+      </article><!-- St. Joseph's Cathedral -->
+      <article class="place-card card-gradient rounded-2xl overflow-hidden golden-border">
+       <div class="image-container"><img src="https://lh3.googleusercontent.com/gps-cs-s/AHVAweqM_t3z5nbJMf5hNy4KQ3fCK0DVlT-c-HoNYJ3Pw5mWKFY1tSJRhvwkBEc3FtFauKJwzDH8WDYX8ganLLjsGe57BpZYiFCzaU5_X84g22EreJqXo-ioCfaD-rWoZ5UNkq9pI_XXQA=s680-w680-h510-rw" alt="St. Joseph's Cathedral" loading="lazy" class="w-full h-40 object-cover" onerror="this.style.background='linear-gradient(135deg, #9b8b8b 0%, #6b5b5b 100%)'; this.alt='St. Joseph Cathedral';">
+       </div>
+       <div class="p-5">
+        <div class="flex items-center gap-2 mb-2">
+         <span>⛪</span>
+         <h3 class="font-heading text-xl font-bold text-gradient">St. Joseph's Cathedral</h3>
+        </div>
+        <p class="text-xs opacity-80 mb-3">A historic Gothic-style cathedral, one of the oldest Catholic churches in Hyderabad.</p>
+        <div class="timing-badge inline-block px-2 py-1 rounded-r-lg text-xs">
+         🕐 6:00 AM - 8:00 PM
+        </div>
+       </div>
+      </article><!-- Peddamma Temple -->
+      <article class="place-card card-gradient rounded-2xl overflow-hidden golden-border">
+       <div class="image-container"><img src="https://lh3.googleusercontent.com/gps-cs-s/AHVAwepX3EeNPzcjOgECsACThV-vZyBD38UK5ZZj3su5qTBMPZCTZbMQ-Do7vw0YlhIW7ug3ykO979EAYXHwxtUsUvIl4wqkdW04XEQn_S334SrFR58nLCD__KR8sobieLH8sCxPBwyY3w=s680-w680-h510-rw" alt="Peddamma Temple" loading="lazy" class="w-full h-40 object-cover" onerror="this.style.background='linear-gradient(135deg, #d4a853 0%, #8b6f47 100%)'; this.alt='Peddamma Temple';">
+       </div>
+       <div class="p-5">
+        <div class="flex items-center gap-2 mb-2">
+         <span>🪔</span>
+         <h3 class="font-heading text-xl font-bold text-gradient">Peddamma Temple</h3>
+        </div>
+        <p class="text-xs opacity-80 mb-3">A popular goddess temple in Jubilee Hills, especially crowded during Bonalu festival.</p>
+        <div class="timing-badge inline-block px-2 py-1 rounded-r-lg text-xs">
+         🕐 5:00 AM - 10:00 PM
+        </div>
+       </div>
+      </article>
+     </div>
+    </div>
+   </section><!-- Footer -->
+   <footer class="px-6 py-12 text-center" style="background: var(--surface-color); border-top: 1px solid rgba(212, 168, 83, 0.2);">
+    <div class="max-w-4xl mx-auto">
+     <h3 class="font-heading text-2xl font-bold mb-4" style="color: var(--primary-color);">✦ Explore Hyderabad ✦</h3>
+     <p class="opacity-70 mb-6">The city where history meets modernity, and every corner tells a story.</p>
+     <div class="flex justify-center gap-6 text-sm opacity-60">
+      <a href="#tourist" class="hover:opacity-100 transition-opacity">Tourist Places</a> <span>•</span> <a href="#hangout" class="hover:opacity-100 transition-opacity">Hangout Places</a> <span>•</span> <a href="#holy" class="hover:opacity-100 transition-opacity">Holy Places</a>
+     </div>
+     <p class="mt-8 text-xs opacity-40">Made with ♥ for the City of Pearls</p>
+    </div>
+   </footer><!-- Back to Top Button --> <button id="backToTop" onclick="scrollToTop()" class="back-to-top fixed bottom-6 right-6 w-12 h-12 rounded-full flex items-center justify-center golden-border" style="background: var(--surface-color); color: var(--primary-color);" aria-label="Back to top">
+    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18" />
+    </svg></button>
+  </div>
+  <script>
+        const defaultConfig = {
+            blog_title: "HYDERABAD",
+            hero_tagline: "The City of Pearls & Nizams",
+            background_color: "#0a0a0f",
+            surface_color: "#1a1a24",
+            text_color: "#f5f5f0",
+            primary_color: "#d4a853",
+            secondary_color: "#8b7355",
+            font_family: "Playfair Display",
+            font_size: 16
+        };
+
+        let config = { ...defaultConfig };
+
+        function applyConfig(cfg) {
+            document.documentElement.style.setProperty('--bg-color', cfg.background_color || defaultConfig.background_color);
+            document.documentElement.style.setProperty('--surface-color', cfg.surface_color || defaultConfig.surface_color);
+            document.documentElement.style.setProperty('--text-color', cfg.text_color || defaultConfig.text_color);
+            document.documentElement.style.setProperty('--primary-color', cfg.primary_color || defaultConfig.primary_color);
+            document.documentElement.style.setProperty('--secondary-color', cfg.secondary_color || defaultConfig.secondary_color);
+
+            const heroTitle = document.getElementById('hero-title');
+            const heroTagline = document.getElementById('hero-tagline');
+            const navTitle = document.getElementById('nav-title');
+
+            if (heroTitle) heroTitle.textContent = cfg.blog_title || defaultConfig.blog_title;
+            if (heroTagline) heroTagline.textContent = cfg.hero_tagline || defaultConfig.hero_tagline;
+            if (navTitle) navTitle.innerHTML = `✦ ${cfg.blog_title || defaultConfig.blog_title}`;
+
+            const customFont = cfg.font_family || defaultConfig.font_family;
+            const baseFontStack = 'Georgia, serif';
+            document.querySelectorAll('.font-heading').forEach(el => {
+                el.style.fontFamily = `${customFont}, ${baseFontStack}`;
+            });
+
+            const baseSize = cfg.font_size || defaultConfig.font_size;
+            document.querySelectorAll('.font-body').forEach(el => {
+                el.style.fontSize = `${baseSize}px`;
+            });
+        }
+
+        if (window.elementSdk) {
+            window.elementSdk.init({
+                defaultConfig,
+                onConfigChange: async (cfg) => {
+                    config = { ...defaultConfig, ...cfg };
+                    applyConfig(config);
+                },
+                mapToCapabilities: (cfg) => ({
+                    recolorables: [
+                        {
+                            get: () => cfg.background_color || defaultConfig.background_color,
+                            set: (value) => { cfg.background_color = value; window.elementSdk.setConfig({ background_color: value }); }
+                        },
+                        {
+                            get: () => cfg.surface_color || defaultConfig.surface_color,
+                            set: (value) => { cfg.surface_color = value; window.elementSdk.setConfig({ surface_color: value }); }
+                        },
+                        {
+                            get: () => cfg.text_color || defaultConfig.text_color,
+                            set: (value) => { cfg.text_color = value; window.elementSdk.setConfig({ text_color: value }); }
+                        },
+                        {
+                            get: () => cfg.primary_color || defaultConfig.primary_color,
+                            set: (value) => { cfg.primary_color = value; window.elementSdk.setConfig({ primary_color: value }); }
+                        },
+                        {
+                            get: () => cfg.secondary_color || defaultConfig.secondary_color,
+                            set: (value) => { cfg.secondary_color = value; window.elementSdk.setConfig({ secondary_color: value }); }
+                        }
+                    ],
+                    borderables: [],
+                    fontEditable: {
+                        get: () => cfg.font_family || defaultConfig.font_family,
+                        set: (value) => { cfg.font_family = value; window.elementSdk.setConfig({ font_family: value }); }
+                    },
+                    fontSizeable: {
+                        get: () => cfg.font_size || defaultConfig.font_size,
+                        set: (value) => { cfg.font_size = value; window.elementSdk.setConfig({ font_size: value }); }
+                    }
+                }),
+                mapToEditPanelValues: (cfg) => new Map([
+                    ["blog_title", cfg.blog_title || defaultConfig.blog_title],
+                    ["hero_tagline", cfg.hero_tagline || defaultConfig.hero_tagline]
+                ])
+            });
+        }
+
+        applyConfig(config);
+
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobileMenu');
+            menu.classList.toggle('hidden');
+        }
+
+        function scrollToTop() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        const backToTopBtn = document.getElementById('backToTop');
+        const appWrapper = document.querySelector('.app-wrapper');
+        
+        appWrapper.addEventListener('scroll', () => {
+            if (appWrapper.scrollTop > 300) {
+                backToTopBtn.classList.add('visible');
+            } else {
+                backToTopBtn.classList.remove('visible');
+            }
+        });
+
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth' });
+                    const mobileMenu = document.getElementById('mobileMenu');
+                    if (!mobileMenu.classList.contains('hidden')) {
+                        mobileMenu.classList.add('hidden');
+                    }
+                }
+            });
+        });
+    </script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9d666c5ee6a11397',t:'MTc3MjUxNzY1Mi4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
